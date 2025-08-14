@@ -117,7 +117,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, inject } from 'vue';
+import { WebMcpServer, z } from '@opentiny/next-sdk'
 import {
   TinyImage,
   TinyButtonGroup,
@@ -155,9 +156,26 @@ function sizeChange(size) {
   custPager.value.pageSize = size;
 }
 
+import { WebMcpServer, createMessageChannelPairTransport, z } from '@opentiny/next-sdk'
+
+const serverTransport = inject('serverTransport')
+
 // 组件挂载时获取商品列表
 onMounted(async () => {
   await store.fetchProducts();
+
+  const server = new WebMcpServer()
+
+  server.registerTool('demo-tool', {
+    title: '演示工具',
+    description: '一个简单工具',
+    inputSchema: { foo: z.string() },
+  }, async (params) => {
+    console.log('params:', params)
+    return { content: [{ type: 'text', text: `收到: ${params.foo}` }] }
+  })
+
+  await server.connect(serverTransport)
 });
 
 const categoryLabels: Record<string, string> = {

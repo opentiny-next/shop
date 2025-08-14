@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@opentiny/next-sdk": "^0.1.0",
     "@opentiny/vue": "^3.23.0",
     "@opentiny/vue-icon": "^3.23.0",
     "@opentiny/vue-theme": "^3.23.0",
