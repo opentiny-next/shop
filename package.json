@@ -1,0 +1,21 @@
+{
+  "name": "shop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shop",
+  "scripts": {
+    "dev": "pnpm -F shop dev",
+    "dev:admin": "pnpm -F shop-admin dev",
+    "dev:server": "pnpm -F shop-server dev"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=8"
+  }
+}

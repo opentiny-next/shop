@@ -1,0 +1,59 @@
+<template>
+  <tiny-config-provider :design="design">
+    <router-view />
+  </tiny-config-provider>
+</template>
+<script setup>
+import { TinyConfigProvider } from '@opentiny/vue';
+const design = {
+  name: 'x-design', // 设计规范名称
+  version: '1.0.0', // 设计规范版本号
+  components: {
+    Button: {
+      props: {
+        resetTime: 0,
+        round: true,
+      },
+    },
+  },
+};
+</script>
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+}
+
+#app {
+  height: 100%;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #aaa;
+}
+</style>
