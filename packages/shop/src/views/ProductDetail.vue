@@ -62,7 +62,7 @@
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from '../store';
-import { ElMessage } from 'element-plus';
+import { TinyModal } from '@opentiny/vue';
 import { TinyImage, TinyNumeric, TinyButton } from '@opentiny/vue';
 
 const route = useRoute();
@@ -85,7 +85,7 @@ const addToCart = () => {
     for (let i = 0; i < quantity.value; i++) {
       store.addToCart(product.value);
     }
-    ElMessage.success(`已将 ${quantity.value} 件商品添加到购物车`);
+    TinyModal.alert(`已将 ${quantity.value} 件商品添加到购物车`);
   }
 };
 </script>
