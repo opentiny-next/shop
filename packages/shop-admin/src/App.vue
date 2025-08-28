@@ -2,9 +2,15 @@
   <tiny-config-provider :design="design">
     <router-view />
   </tiny-config-provider>
+  <tiny-remoter session-id="5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9"></tiny-remoter>
 </template>
 <script setup>
+import { onMounted, provide } from 'vue'
 import { TinyConfigProvider } from '@opentiny/vue';
+import { WebMcpClient, createMessageChannelPairTransport } from '@opentiny/next-sdk'
+import { TinyRemoter } from '@opentiny/next-remoter'
+import '@opentiny/next-remoter/dist/style.css'
+
 const design = {
   name: 'x-design', // 设计规范名称
   version: '1.0.0', // 设计规范版本号
@@ -17,6 +23,19 @@ const design = {
     },
   },
 };
+
+const [serverTransport, clientTransport] = createMessageChannelPairTransport()
+provide('serverTransport', serverTransport)
+
+onMounted(async () => {
+  const client = new WebMcpClient()
+  await client.connect(clientTransport)
+  const { sessionId } = await client.connect({
+    agent: true,
+    url: 'https://agent.opentiny.design/api/v1/mcp-proxy-trial/mcp',
+    sessionId: '5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9'
+  })
+})
 </script>
 <style>
 html,
