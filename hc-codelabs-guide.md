@@ -44,7 +44,14 @@ OpenTiny NEXT 提供了 TinyVue 前端智能组件库、TinyEngine 智能低代�
 打开 VSCode 代码编辑器，`` Ctrl + ` `` 打开终端命令行工具，使用 `git clone` 命令克隆电商项目代码。
 
 ```shell
+# 最简单的方式就是直接通过 https 方式克隆，只需要输入 GitHub 登录账号和密码即可，需要确保网络是可以访问 github.com 域名的
 git clone https://github.com/opentiny-next/shop.git
+
+# 如果配置了 ssh 密钥对，也可以使用以下方式克隆代码
+git clone git@github.com:opentiny-next/shop.git
+
+# 如果安装了 GitHub CLI，也可以通过以下方式克隆代码
+gh repo clone opentiny-next/shop
 ```
 
 进入 shop 目录：
@@ -99,22 +106,48 @@ pnpm -F shop-admin i @opentiny/next-sdk
 在 views/Products.vue 文件中加入以下代码：
 
 ```typescript
-import { WebMcpServer, createMessageChannelPairTransport, z } from '@opentiny/next-sdk'
+import { inject } from 'vue'
+import { WebMcpServer, z } from '@opentiny/next-sdk'
 
-const [serverTransport, clientTransport] = createMessageChannelPairTransport()
+const serverTransport = inject('serverTransport')
 
 const server = new WebMcpServer()
 
-server.registerTool('demo-tool', {
-  title: '演示工具',
-  description: '一个简单工具',
-  inputSchema: { foo: z.string() },
-}, async (params) => {
-  console.log('params:', params)
-  return { content: [{ type: 'text', text: `收到: ${params.foo}` }] }
-})
+// 注册添加商品工具，支持所有商品属性
+server.registerTool(
+  'add-product',
+  {
+    description: '添加商品，上架',
+    inputSchema: {
+      id: z.number().describe('商品ID'),
+      name: z.string().describe('商品名称'),
+      price: z.number().describe('商品价格'),
+      description: z.string().describe('商品描述'),
+      image: z.string().describe('商品图片URL'),
+      category: z.string().describe('商品分类, 例如：手机、笔记本、平板'),
+      stock: z.number().describe('商品库存，数量'),
+      status: z.enum(['on', 'off']).describe('商品状态，on为上架，off为下架')
+    }
+  },
+  async (productData: ProductForm) => {
+    // 显示添加商品弹窗并填充数据
+    productData.id = productData.id || new Date().getTime()
+    const success = await store.addProduct(productData)
 
-await server.connect(serverTransport)
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `商品数据: ${productData.name}，价格: ${productData.price}，库存: ${productData.stock}`
+        }
+      ]
+    }
+  }
+)
+
+onMounted(async () => {
+  await server.connect(serverTransport)
+})
 ```
 
 ### 4.4 第三步：创建 MCP Client，与 WebAgent 智能代理连接
@@ -122,14 +155,21 @@ await server.connect(serverTransport)
 在 App.vue 文件中加入以下代码：
 
 ```typescript
-import { WebMcpClient } from '@opentiny/next-sdk'
+import { onMounted, provide } from 'vue'
+import { WebMcpClient, createMessageChannelPairTransport } from '@opentiny/next-sdk'
 
+const [serverTransport, clientTransport] = createMessageChannelPairTransport()
+provide('serverTransport', serverTransport)
 const client = new WebMcpClient()
-await client.connect(clientTransport)
-const { sessionId } = await client.connect({
-  agent: true,
-  url: 'https://agent.opentiny.design/api/v1/webmcp-trial/mcp',
-  sessionId: '5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9'
+
+onMounted(async () => {
+  await client.connect(clientTransport)
+  const { sessionId } = await client.connect({
+    agent: true,
+    url: 'https://agent.opentiny.design/api/v1/webmcp-trial/mcp',
+    sessionId: '5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9'
+  })
+  console.log('sessionId:', sessionId)
 })
 ```
 
