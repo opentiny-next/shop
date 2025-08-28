@@ -46,6 +46,8 @@ export const useStore = defineStore('main', {
 
     // 添加商品
     async addProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) {
+      console.log('addProduct=========', product);
+      
       this.loading = true;
       this.error = null;
       try {

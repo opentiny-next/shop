@@ -72,15 +72,15 @@
     "updatedAt": "2025-05-29T16:14:35.150Z"
   },
   {
-    "name": "小米 13",
-    "price": 3999,
-    "description": "小米手机",
-    "image": "https://img1.baidu.com/it/u=809120544,2106407569&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500",
-    "category": "phones",
-    "stock": 2222,
+    "id": 9,
+    "name": "华为Pura70",
+    "price": 5999,
+    "description": "新款华为Pura70，性能强劲，拍照出色。",
+    "image": "https://example.com/huawei-pura70.jpg",
+    "category": "手机",
+    "stock": 20,
     "status": "on",
-    "id": 7,
-    "createdAt": "2025-05-29T00:32:46.308Z",
-    "updatedAt": "2025-05-30T21:28:28.543Z"
+    "createdAt": "2025-08-28T11:04:06.314Z",
+    "updatedAt": "2025-08-28T11:04:06.314Z"
   }
 ]
