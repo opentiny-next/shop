@@ -1,0 +1,61 @@
+{
+  "name": "ecommerce-admin",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist-electron/index.js",
+  "scripts": {
+    "dev": "vite --config vite.electron.config.ts",
+    "dev:web": "vite",
+    "dev:electron": "npm run build:main && concurrently \"npm run dev\" \"wait-on http://localhost:3060 && electron .\"",
+    "build:main": "tsc -p tsconfig.main.json && copy main\\preload.js dist-electron\\preload.js",
+    "build": "vite build --config vite.electron.config.ts && npm run build:main",
+    "build:web": "vite build",
+    "build:exe": "npm run build && electron-builder",
+    "preview": "vite preview",
+    "electron:dev": "npm run dev:electron",
+    "electron:build": "npm run build:exe",
+    "test:mcp": "npx @modelcontextprotocol/inspector"
+  },
+  "build": {
+    "appId": "com.example.ecommerceadmin",
+    "asar": true,
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "dependencies": {
+    "@opentiny/vue": "^3.25.0",
+    "@opentiny/vue-icon": "^3.25.0",
+    "@opentiny/vue-theme": "^3.25.0",
+    "@opentiny/next-sdk": "^0.1.0",
+    "@opentiny/next-remoter": "0.0.1-alpha.10",
+    "echarts": "^5.6.0",
+    "vue": "^3.5.17",
+    "vue-router": "^4.3.0",
+    "pinia": "^2.1.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/tsconfig": "^0.7.0",
+    "@types/node": "^22.15.16",
+    "concurrently": "^9.2.0",
+    "electron": "^37.2.5",
+    "electron-builder": "^26.0.12",
+    "tsup": "^8.5.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-electron-renderer": "^0.14.6",
+    "vue-tsc": "^2.2.12",
+    "wait-on": "^8.0.4",
+    "less": "^4.2.0"
+  }
+}
