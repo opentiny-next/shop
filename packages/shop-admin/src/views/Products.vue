@@ -134,6 +134,48 @@ import {
 } from '@opentiny/vue';
 import { useStore } from '../store';
 import type { Product } from '../types';
+import { inject } from 'vue'
+import { WebMcpServer, z } from '@opentiny/next-sdk'
+
+const serverTransport = inject('serverTransport')
+
+const server = new WebMcpServer()
+
+// 注册添加商品工具，支持所有商品属性
+server.registerTool(
+  'add-product',
+  {
+    description: '添加商品，上架',
+    inputSchema: {
+      id: z.number().describe('商品ID'),
+      name: z.string().describe('商品名称'),
+      price: z.number().describe('商品价格'),
+      description: z.string().describe('商品描述'),
+      image: z.string().describe('商品图片URL'),
+      category: z.string().describe('商品分类, 例如：手机、笔记本、平板'),
+      stock: z.number().describe('商品库存，数量'),
+      status: z.enum(['on', 'off']).describe('商品状态，on为上架，off为下架')
+    }
+  },
+  async (productData: ProductForm) => {
+    // 显示添加商品弹窗并填充数据
+    productData.id = productData.id || new Date().getTime()
+    const success = await store.addProduct(productData)
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `商品数据: ${productData.name}，价格: ${productData.price}，库存: ${productData.stock}`
+        }
+      ]
+    }
+  }
+)
+
+onMounted(async () => {
+  await server.connect(serverTransport)
+})
 
 const store = useStore();
 const searchQuery = ref('');
