@@ -207,6 +207,18 @@ import '@opentiny/next-remoter/dist/style.css'
 
 ### 4.7 操控 Electron 桌面应用和 uni-app 手机应用（选做）
 
+**操控 Electron 桌面应用**
+
+执行 `pnpm -F shop-admin-electron build:exe` 构建 exe 可执行文件，构建出来的产物在 `packages/shop-admin-electron/dist` 目录，需要确保当前网络可以访问 github.com，因为构建过程会从 github.com 下载 electron 软件。
+
+在 Windows 电脑中双击 exe 文件即可安装生成的桌面应用，效果和 PC 端的 Web 应用是一样的。
+
+**操控 uni-app 手机应用**
+
+先在终端命令行中切到 `packages/shop-uniapp` 目录，执行 `npm i` 安装依赖。
+
+然后在 HBuilder 软件中打开 `packages/shop-uniapp` 项目，打开根目录的 index.html 文件，点击右上角的预览按钮即可预览手机应用，效果和手机端的 Web 应用类似。
+
 ## 5. 实验总结
 
 本次实验的核心任务是：用最少代码改动，把一个典型“Vite + Vue3 + TinyVue”电商三件套（前端商城、后台管理、Express 后端）升级为 AI 驱动的智能应用。最终效果：右下角出现智能入口图标，用户可直接用自然语言指挥 AI 完成“上架 10 台华为 Pura 70”等操作。
