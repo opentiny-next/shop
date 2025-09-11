@@ -60,6 +60,16 @@ gh repo clone opentiny-next/shop
 cd shop
 ```
 
+#### 使用 pnpm 安装依赖和启动项目（推荐）
+
+使用 pnpm 方式安装依赖和启动项目更方便，只需要在项目根目录执行命令即可。
+
+全局安装 pnpm：
+
+```shell
+npm i -g pnpm
+```
+
 安装依赖：
 
 ```shell
@@ -77,6 +87,35 @@ pnpm dev:admin
 
 # 启动电商后端
 pnpm dev:server
+```
+
+#### 使用 npm 安装依赖和启动项目
+
+你也可以使用 npm 方式安装依赖和启动项目，需要分别进入对应的子包目录。
+
+启动电商后端：
+
+```shell
+# 进入 shop-server 目录
+cd packages/shop-server
+npm i
+npm run dev
+```
+
+启动电商商城前端应用：
+
+```shell
+cd packages/shop
+npm i
+npm run dev
+```
+
+启动电商后台管理系统：
+
+```shell
+cd packages/shop-admin
+npm i
+npm run dev
 ```
 
 打开电商商城前端应用：[https://localhost:3070/](https://localhost:3070/)
@@ -98,12 +137,17 @@ pnpm dev:server
 给 shop-admin 项目安装 NEXT SDK：
 
 ```shell
+# 使用 pnpm
 pnpm -F shop-admin i @opentiny/next-sdk
+
+# 使用 npm
+# cd packages/shop-admin
+# npm i @opentiny/next-sdk
 ```
 
 ### 4.3 第二步：创建 MCP Server，定义 MCP 工具
 
-在 views/Products.vue 文件中加入以下代码：
+在 src/views/Products.vue 文件的第 136 行后面（`import type { Product } from '../types';` 这行代码后面）加入以下代码：
 
 ```typescript
 import { inject } from 'vue'
@@ -117,7 +161,7 @@ const server = new WebMcpServer()
 server.registerTool(
   'add-product',
   {
-    description: '添加商品，上架',
+    description: '添加商品，上架商品，请随机生成商品ID、商品价格、商品描述、商品图片URL、商品库存等信息，不要要求用户提供这些信息。',
     inputSchema: {
       id: z.number().describe('商品ID'),
       name: z.string().describe('商品名称'),
@@ -152,7 +196,7 @@ onMounted(async () => {
 
 ### 4.4 第三步：创建 MCP Client，与 WebAgent 智能代理连接
 
-在 App.vue 文件中加入以下代码：
+在 src/App.vue 文件的第 7 行后面（`import { TinyConfigProvider } from '@opentiny/vue';` 这行代码后面）加入以下代码：
 
 ```typescript
 import { onMounted, provide } from 'vue'
@@ -175,23 +219,35 @@ onMounted(async () => {
 
 ### 4.5 第四步：引入 NEXT Remoter 遥控器，实现 AI 对话
 
-给 shop-admin 项目安装 NEXT Remoter：
+给 src/shop-admin 项目安装 NEXT Remoter：
 
 ```shell
 pnpm -F shop-admin i @opentiny/next-remoter
+
+# 使用 npm
+# cd packages/shop-admin
+# npm i @opentiny/next-remoter
 ```
 
-在 App.vue 中使用遥控器：
+在 App.vue 中使用遥控器。
 
-```html
-<script setup lang="ts">
+具体步骤如下：
+
+在 src/App.vue 文件的 `import { TinyConfigProvider } from '@opentiny/vue';` 这行代码后面加入以下代码：
+
+```typescript
 import { TinyRemoter } from '@opentiny/next-remoter'
 import '@opentiny/next-remoter/dist/style.css'
-</script>
+```
 
-<template>
-  <tiny-remoter session-id="5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9" />
-</template>
+在 src/App.vue 文件的 `<router-view />` 这行代码后面加入以下代码：
+
+```html
+<tiny-remoter
+  session-id="5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9"
+  qr-code-url="https://ai.opentiny.design/next-remoter/shop.html"
+  system-prompt="你是商品管理员，擅长通过工具调用帮助用户查询商品列表，管理商品。新增商品时如果商品信息不完整，请自动补充完整。"
+/>
 ```
 
 这时应用右下角会出现一个图标，这就是遥控器的入口，你可以将鼠标悬浮到这个图标上，选择：
@@ -201,7 +257,7 @@ import '@opentiny/next-remoter/dist/style.css'
 
 不管是通过弹出 AI 对话框，还是通过手机扫码，你都可以通过对话方式让 AI 代替你操作 Web 应用，提升完成任务的效率。
 
-比如你可以输入：“帮我上架10台华为 Pura 70 手机”
+比如你可以输入：“帮我上架10台：华为 Pura 70 手机”
 
 效果：
 
@@ -231,7 +287,7 @@ import '@opentiny/next-remoter/dist/style.css'
 
 ![](copilot-agent.png)
 
-在输入框中输入需要操作的内容，例如：“帮我上架10台华为 Pura 70 手机”，这时 AI 就会调用你的 Web 应用中定义的 MCP 工具，操作你的 Web 应用，完成商品的添加。
+在输入框中输入需要操作的内容，例如：“帮我上架10台：华为 Pura 70 手机”，这时 AI 就会调用你的 Web 应用中定义的 MCP 工具，操作你的 Web 应用，完成商品的添加。
 
 **通过 Coze 操作的步骤**
 
@@ -243,7 +299,7 @@ import '@opentiny/next-remoter/dist/style.css'
 
 ![](coze-mcp.png)
 
-在输入框中输入需要操作的内容，例如：“帮我上架10台华为 Pura 70 手机”，这时 AI 就会调用你的 Web 应用中定义的 MCP 工具，操作你的 Web 应用，完成商品的添加。
+在输入框中输入需要操作的内容，例如：“帮我上架10台：华为 Pura 70 手机”，这时 AI 就会调用你的 Web 应用中定义的 MCP 工具，操作你的 Web 应用，完成商品的添加。
 
 ### 4.7 操控 Electron 桌面应用和 uni-app 手机应用（选做）
 
