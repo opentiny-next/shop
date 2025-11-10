@@ -145,7 +145,8 @@ const server = new WebMcpServer()
 server.registerTool(
   'add-product',
   {
-    description: '添加商品，上架',
+    title: '添加/上架商品',
+    description: '添加商品，上架商品，自动生成商品ID、商品价格、商品描述、商品图片URL信息',
     inputSchema: {
       id: z.number().describe('商品ID'),
       name: z.string().describe('商品名称'),

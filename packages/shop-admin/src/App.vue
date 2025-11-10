@@ -1,16 +1,21 @@
 <template>
   <tiny-config-provider :design="design">
     <router-view />
-    <tiny-remoter session-id="5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9" />
+    <tiny-remoter
+      v-if="loadingSessionId"
+      session-id="5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9"
+      agent-root="https://agent.opentiny.design/api/v1/webmcp-trial/"
+    />
   </tiny-config-provider>
 </template>
 <script setup>
 import { TinyConfigProvider } from '@opentiny/vue';
-import { onMounted, provide } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import { WebMcpClient, createMessageChannelPairTransport } from '@opentiny/next-sdk'
 import { TinyRemoter } from '@opentiny/next-remoter'
 import '@opentiny/next-remoter/dist/style.css'
 
+const loadingSessionId = ref(false)
 const [serverTransport, clientTransport] = createMessageChannelPairTransport()
 provide('serverTransport', serverTransport)
 const client = new WebMcpClient()
@@ -22,6 +27,7 @@ onMounted(async () => {
     url: 'https://agent.opentiny.design/api/v1/webmcp-trial/mcp',
     sessionId: '5f8edea7-e3ae-4852-a334-1bb6b3a1cfa9'
   })
+  loadingSessionId.value = true
   console.log('sessionId:', sessionId)
 })
 
