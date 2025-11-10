@@ -4,7 +4,8 @@
   "private": true,
   "description": "Shop",
   "scripts": {
-    "dev": "pnpm -F shop dev",
+    "dev": "pnpm dev:admin",
+    "dev:shop": "pnpm -F shop dev",
     "dev:admin": "pnpm -F shop-admin dev",
     "dev:server": "pnpm -F shop-server dev"
   },
